@@ -1,42 +1,57 @@
-// ITERATION 1
-
 function updateSubtotal(product) {
   console.log('Calculating subtotal, yey!');
 
-  //... your code goes here
+  let price = parseFloat(product.querySelector('.price span').innerHTML)
+  let quant = parseFloat(product.querySelector('.quantity input').value)
+
+  let subtotal = (quant*price).toFixed(2)
+  product.querySelector('.subtotal span').innerHTML = subtotal
+
+  return parseFloat(subtotal)
 }
 
 function calculateAll() {
-  // code in the following two lines is added just for testing purposes.
-  // it runs when only iteration 1 is completed. at later point, it can be removed.
-  const singleProduct = document.querySelector('.product');
-  updateSubtotal(singleProduct);
-  // end of test
-
-  // ITERATION 2
-  //... your code goes here
-
-  // ITERATION 3
-  //... your code goes here
+  const total = [...document.querySelectorAll('.product')]
+    .map(updateSubtotal)
+    .reduce((s, x) => s + x)
+    .toFixed(2)
+  
+  document.querySelector("#total-value span").innerHTML = total
 }
 
-// ITERATION 4
+let productNames = ["T-Shirt", "Niko-Approved Shorts", "Mug", "Sweater"]
+let minPrice = 5, maxPrice = 50
 
-function removeProduct(event) {
-  const target = event.currentTarget;
-  console.log('The target in remove is:', target);
-  //... your code goes here
+function createProduct(name, price) {
+  let template = document.getElementById("productTemplate").innerHTML
+
+  name = name || productNames[Math.floor(Math.random() * productNames.length)]
+  
+  price = price || (Math.random() * (maxPrice - minPrice) + minPrice).toFixed(2)
+
+  template = template.replace("{{name}}", "Ironhack " + name).replace("{{price}}", price)
+
+  document.querySelector("#cart tbody").innerHTML += template
 }
 
-// ITERATION 5
-
-function createProduct() {
-  //... your code goes here
-}
 
 window.addEventListener('load', () => {
   const calculatePricesBtn = document.getElementById('calculate');
   calculatePricesBtn.addEventListener('click', calculateAll);
 
-  //... your code goes here
+  document.querySelector("#create").addEventListener("click", x => {
+    const name = document.querySelector(".create-product input[type=text]").value
+    const price = parseFloat(document.querySelector(".create-product input[type=number]").value)
+    createProduct(name, price)
+  })
+  
+  for (let i = 0; i < 5;i++)
+    createProduct()
+  
+  document.querySelectorAll(".product").forEach(x => {
+    console.log(x.querySelector(".btn-remove"))
+    x.querySelector(".btn-remove").addEventListener("click", x.remove.bind(x))
+  })
+
+  calculateAll()
 });
